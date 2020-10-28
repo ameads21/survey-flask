@@ -13,13 +13,13 @@ responses = ""
 
 @app.route('/')
 def show_survey_start():
+  """Selecting the survey"""
   return render_template('start_page.html', survey=survey)
-
-
 
 
 @app.route('/begin', methods=["POST"])
 def survey_start():
+  """Clearing the responses from session and starting survey"""
   session[responses] = []
   return redirect('/questions/0')
 
@@ -27,6 +27,7 @@ def survey_start():
 
 @app.route('/answer', methods=["POST"])
 def handle_question():
+  """Saves question to session and goes to the next question"""
 
   #Getting the results (if available)
   
@@ -45,11 +46,10 @@ def handle_question():
     return redirect(f"/questions/{len(response)}")
 
 
-
-
-
 @app.route('/questions/<int:quesId>')
 def question_page(quesId):
+  """Displays current question"""
+
   response = session.get(responses)
 
   if (response is None):
@@ -64,18 +64,11 @@ def question_page(quesId):
     flash(f"Invalid question id: {quesId}")
     return redirect(f"/questions/{len(response)}")
 
-  
-
   question = survey.questions[quesId]
   return render_template('question.html', question_num=quesId, question=question)
 
 
-
-
-
-
-
-
 @app.route('/completed')
 def survey_completed():
-  return render_template("completed.html", answers=responses)
+  """Redirects user to completed template"""
+  return render_template("completed.html")
